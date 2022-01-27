@@ -122,6 +122,7 @@ export default {
     }
   },
   computed: {
+    /*$route.path表示  /dashboard  */
     //http://localhost:8080/dashboard  对于这个url，onRoutes这个值即使dashboard
     onRoutes(){   //变量就是当前url绑定的，当url发生变化，导致这个变量发生变化，就导致导航栏选中的发生了变化
       return this.$route.path.replace('/','')
