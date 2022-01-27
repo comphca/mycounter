@@ -136,12 +136,12 @@ export default {
     }
   },
   created(){
-    //订阅collapse消息
+    //订阅collapse消息在总线上获取是否隐藏
     this.$bus.on("collapse",msg => {
-      this.collapseChange(msg);  //collapse-content  防止有歧义，这个与原来区分
+      this.collapseChange(msg);  //collapse-content  防止有歧义，这个与原来区分，侧边栏使用完该消息后发送总线消息通知主页面
     });
   },
-  beforeDestroy(){
+  beforeDestroy(){/*组件销毁的时候取消订阅*/
     //取消订阅
     this.$bus.off("collapse",msg => {
       this.collapseChange(msg);

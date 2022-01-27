@@ -21,6 +21,11 @@ const routes = [
         name: 'Dashboard',
         component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue')
       },
+      {
+        path: '/pwdsetting',
+        name: 'PwdSetting',
+        component: () => import(/* webpackChunkName: "about" */ '../views/PwdSetting.vue')
+      }
     ]
   },
 ]

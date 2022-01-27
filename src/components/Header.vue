@@ -37,7 +37,7 @@ export default {
   data(){
     return{
       //username: '',  //写死guest
-      collapse : true,
+      collapse : false,
     }
   },
   computed:{
@@ -53,7 +53,7 @@ export default {
         logout();
       }
     },
-    collapseChange(){
+    collapseChange(){ /*顶部导航栏发消息通知其他组件自己的状态是隐藏还是显示*/
       this.collapse = !this.collapse;
       this.$bus.emit("collapse",this.collapse);  //往总线上丢一个消息，告诉总线当前的状态是打开的还是折叠的  接受这个消息的有侧边导航栏和主空白页面
     }
