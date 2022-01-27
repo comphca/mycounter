@@ -54,7 +54,7 @@ export default {
       items: [
         {
           icon: 'el-icon-s-custom',
-          index: 'account',
+          index: 'openaccount',  /*该项就是点击侧边导航栏替换到url中的值*/
           title: '开户'
         },
         {

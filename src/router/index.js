@@ -22,6 +22,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/Dashboard.vue')
       },
       {
+        path: '/openaccount',
+        name: 'Openaccount',
+        component: () => import(/* webpackChunkName: "about" */ '../views/OpenAccount.vue')
+      },
+      {
         path: '/pwdsetting',
         name: 'PwdSetting',
         component: () => import(/* webpackChunkName: "about" */ '../views/PwdSetting.vue')
