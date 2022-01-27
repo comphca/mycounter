@@ -32,6 +32,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/Transfer.vue')
       },
       {
+        path: '/orderquery',
+        name: 'Orderquery',
+        component: () => import(/* webpackChunkName: "about" */ '../views/OrderQuery.vue')
+      },
+      {
         path: '/pwdsetting',
         name: 'PwdSetting',
         component: () => import(/* webpackChunkName: "about" */ '../views/PwdSetting.vue')
