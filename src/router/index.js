@@ -27,6 +27,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/OpenAccount.vue')
       },
       {
+        path: '/transfer',
+        name: 'Transfer',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Transfer.vue')
+      },
+      {
         path: '/pwdsetting',
         name: 'PwdSetting',
         component: () => import(/* webpackChunkName: "about" */ '../views/PwdSetting.vue')
