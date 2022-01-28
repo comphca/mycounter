@@ -1,20 +1,22 @@
 <template>
   <div class="login-wrap">
-    <el-form class="login-container">
+    <el-form class="login-container"
+              v-bind:rules="rules">  <!--表单先绑定js的预设的规则-->
+    <!--头部信息-->
       <h3 class="title">用户登录</h3>
 
 
-      <el-form-item>
+      <el-form-item prop="uid">      <!--prop属性对应到规则上的列为空的轻轻显示对应的提示-->
         <el-input type="text" placeholder="账号" />
       </el-form-item>
 
-      <el-form-item>
+      <el-form-item prop="password">
         <el-input type="password" placeholder="密码"/>
       </el-form-item>
 
       <el-row>
         <el-col :span="12">
-          <el-form-item>
+          <el-form-item prop="captcha">
             <el-input type="text" aria-placeholder="验证码"></el-input>
           </el-form-item>
         </el-col>
@@ -25,7 +27,9 @@
       </el-row>
 
       <el-form-item>
-        <el-button type="primary" style="width: 100%">
+        <el-button type="primary" style="width: 100%"
+                    v-bind:loading="logining"
+                    v-on:click="submitForm('ruleForm')">
           登录
         </el-button>
       </el-form-item>
@@ -38,7 +42,114 @@
 
 <script>
 export default {
-  name: "Login"
+  name: "Login",
+  data() {
+    return {
+      //1.提交表单
+      ruleForm: {
+        uid: '',
+        password: '',
+        captcha: '',
+        captchaId: '',
+      },
+      //2.验证码图片
+      codeImg: '',
+      //3.限制规则
+      rules: {
+        uid: [{required: true, message: '请输入账号', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
+        captcha: [{required: true, message: '请输入验证码', trigger: 'blur'}],
+      },
+      //4.防止前端重复提交
+      logining: false,
+    }
+  },
+  //加载立刻执行
+  created(){
+
+    //判断跳转这个页面的路由里面有没有query.msg这个变量，有的话就弹框提示
+    if(Boolean(this.$route.query.msg)){
+      this.$message.info(this.$route.query.msg + "");
+    }
+    // axios.post("http://localhost:8080/login/captcha").then(function (response){
+    //   console.log(response.data.data.imageBase64);
+    //
+    // })
+
+
+    this.getCode();
+  },
+  methods: {
+    //{id,imageBase64}
+    captchaCallback(status,message,captchaData) {
+      console.log(captchaData);
+      // console.log(captchaData);
+      // this.ruleForm.captchaId = captchaData.id;
+      this.ruleForm.captchaId = captchaData.id;
+      this.codeImg = captchaData.imageBase64;
+
+      // this.$refs.codeImg.src = window.URL.createObjectURL(captchaData.imageBase64);
+
+    },
+    //common.js(网络交互) <-- logic.js(业务逻辑) <-- vue
+    //验证码获取
+    getCode() {
+      queryCaptcha(this.captchaCallback);
+    },
+
+    //登录回调函数
+    loginCallback(status,message,acc) {
+      console.log('login 回调');
+      console.log(acc);
+      console.log(status);
+      if (status == 2) {
+        //登录失败
+        this.$message.error(msg);
+        this.logining = false;
+        this.getCode();
+      } else {
+        //登录成功 uid token
+        sessionStorage.setItem("uid", acc.uid);
+        sessionStorage.setItem("token", acc.token);
+        //显示上次成功登录时间
+        // if (acc.token.length > 1) {
+        //   this.$message.success("登录成功,上次登录时间:"
+        //       + acc.lastLoginDate + " " + acc.lastLoginTime);
+        // } else {
+        //   this.$message.success("登录成功");
+        // }
+        //跳转主页面
+        setTimeout(() => {
+          this.logining = false;
+          this.$router.push({path : '/dashboard'});
+          //成交 委托 持仓查询
+          queryBalance();
+          // queryOrder();
+          // queryTrade();
+          // queryPosi();
+        }, 1000);
+
+      }
+    },
+    //提交表单
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.logining = true;
+          login({
+            uid: this.ruleForm.uid,
+            //password: encryptMD5(this.ruleForm.password),
+            password: this.ruleForm.password,
+            captcha: this.ruleForm.captcha,
+            captchaId: this.ruleForm.captchaId,
+          }, this.loginCallback);
+        } else {
+          this.$message.error('用户名/密码/验证码不能为空');
+          this.logining = false;
+        }
+      })
+    }
+  }
 }
 </script>
 
