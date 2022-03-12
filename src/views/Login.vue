@@ -1,35 +1,37 @@
 <template>
   <div class="login-wrap">
     <el-form class="login-container"
-              v-bind:rules="rules">  <!--表单先绑定js的预设的规则-->
+             v-model="ruleForm"
+              v-bind:rules="rules" ref="ruleForm">  <!--表单先绑定js的预设的规则-->
     <!--头部信息-->
       <h3 class="title">用户登录</h3>
 
 
       <el-form-item prop="uid">      <!--prop属性对应到规则上的列为空的轻轻显示对应的提示-->
-        <el-input type="text" placeholder="账号" />
+        <el-input v-model="ruleForm.uid" type="text" placeholder="账号" />
       </el-form-item>
 
       <el-form-item prop="password">
-        <el-input type="password" placeholder="密码"/>
+        <el-input v-model="ruleForm.password" type="password" placeholder="密码"/>
       </el-form-item>
 
       <el-row>
         <el-col :span="12">
           <el-form-item prop="captcha">
-            <el-input type="text" aria-placeholder="验证码"></el-input>
+            <el-input v-model="ruleForm.captcha" type="text" placeholder="验证码"></el-input>
           </el-form-item>
         </el-col>
 
-        <el-col :span="12">
-          <img />
+        <!-- 验证码图片-->
+        <el-col :span="12" style="text-align: right">
+          <img v-bind:src="codeImg" @click="getCode()" title="codeImg"/>
         </el-col>
       </el-row>
 
       <el-form-item>
         <el-button type="primary" style="width: 100%"
                     v-bind:loading="logining"
-                    v-on:click="submitForm('ruleForm')">
+                   v-on:click="submitForm('ruleForm')">
           登录
         </el-button>
       </el-form-item>
@@ -41,6 +43,10 @@
 </template>
 
 <script>
+import {queryCaptcha, login} from '../api/loginApi';
+import axios from 'axios';
+// import qs from 'qs';
+
 export default {
   name: "Login",
   data() {
@@ -56,9 +62,9 @@ export default {
       codeImg: '',
       //3.限制规则
       rules: {
-        uid: [{required: true, message: '请输入账号', trigger: 'blur'}],
-        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
-        captcha: [{required: true, message: '请输入验证码', trigger: 'blur'}],
+        uid: [{required: false, message: '请输入账号1', trigger: 'blur'}],
+        password: [{required: false, message: '请输入密码2', trigger: 'blur'}],
+        captcha: [{required: false, message: '请输入验证码3', trigger: 'blur'}],
       },
       //4.防止前端重复提交
       logining: false,
@@ -68,27 +74,24 @@ export default {
   created(){
 
     //判断跳转这个页面的路由里面有没有query.msg这个变量，有的话就弹框提示
-    if(Boolean(this.$route.query.msg)){
+    /*if(Boolean(this.$route.query.msg)){
       this.$message.info(this.$route.query.msg + "");
-    }
-    // axios.post("http://localhost:8080/login/captcha").then(function (response){
-    //   console.log(response.data.data.imageBase64);
-    //
-    // })
+    }*/
+    /*axios.post("http://localhost:8080/test").then(function (response){
 
 
+    })*/
+
+    console.log("glj");
     this.getCode();
   },
   methods: {
-    //{id,imageBase64}
-    captchaCallback(status,message,captchaData) {
-      console.log(captchaData);
+    captchaCallback(status,message,data) {
+
       // console.log(captchaData);
       // this.ruleForm.captchaId = captchaData.id;
-      this.ruleForm.captchaId = captchaData.id;
-      this.codeImg = captchaData.imageBase64;
-
-      // this.$refs.codeImg.src = window.URL.createObjectURL(captchaData.imageBase64);
+      this.ruleForm.captchaId = data.data.code;
+      this.codeImg = data.data.base64ByteStr;
 
     },
     //common.js(网络交互) <-- logic.js(业务逻辑) <-- vue
@@ -99,9 +102,6 @@ export default {
 
     //登录回调函数
     loginCallback(status,message,acc) {
-      console.log('login 回调');
-      console.log(acc);
-      console.log(status);
       if (status == 2) {
         //登录失败
         this.$message.error(msg);
@@ -109,21 +109,22 @@ export default {
         this.getCode();
       } else {
         //登录成功 uid token
-        sessionStorage.setItem("uid", acc.uid);
-        sessionStorage.setItem("token", acc.token);
+        sessionStorage.setItem("uid", acc.data.uid);
+        sessionStorage.setItem("token", acc.data.token);
         //显示上次成功登录时间
-        // if (acc.token.length > 1) {
-        //   this.$message.success("登录成功,上次登录时间:"
-        //       + acc.lastLoginDate + " " + acc.lastLoginTime);
-        // } else {
-        //   this.$message.success("登录成功");
-        // }
+
+        if (acc.data.token.length > 1) {
+          this.$message.success("登录成功,上次登录时间:"
+              + acc.data.modifydate + " " + acc.data.modifydate);
+        } else {
+          this.$message.success("登录成功");
+        }
         //跳转主页面
         setTimeout(() => {
           this.logining = false;
           this.$router.push({path : '/dashboard'});
           //成交 委托 持仓查询
-          queryBalance();
+          //queryBalance();
           // queryOrder();
           // queryTrade();
           // queryPosi();
@@ -132,23 +133,62 @@ export default {
       }
     },
     //提交表单
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.logining = true;
-          login({
-            uid: this.ruleForm.uid,
-            //password: encryptMD5(this.ruleForm.password),
-            password: this.ruleForm.password,
-            captcha: this.ruleForm.captcha,
-            captchaId: this.ruleForm.captchaId,
-          }, this.loginCallback);
-        } else {
-          this.$message.error('用户名/密码/验证码不能为空');
-          this.logining = false;
-        }
-      })
-    }
+    submitForm() {
+      //提交表单后先置登录按钮为true，防止重复提交
+      this.logining = true;
+
+      //调api接口
+      login({
+        uid : this.ruleForm.uid,
+        password : this.ruleForm.password,
+        captcha : this.ruleForm.captcha,
+        captchaId: this.ruleForm.captchaId
+      },this.loginCallback)
+    },
+
+    // submitForm1(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       this.logining = true;
+    //       login({
+    //         uid: this.ruleForm.uid,
+    //         //password: encryptMD5(this.ruleForm.password),
+    //         password: this.ruleForm.password,
+    //         captcha: this.ruleForm.captcha,
+    //         captchaId: this.ruleForm.captchaId,
+    //       }, this.loginCallback);
+    //     } else {
+    //       this.$message.error('用户名/密码/验证码不能为空');
+    //       this.logining = false;
+    //     }
+    //   })
+    //   /*axios(
+    //       {
+    //         timeout: 5000,
+    //         method: "post",
+    //         url: "http://localhost:8080/test",
+    //         data: qs.stringify({
+    //           uid:this.ruleForm.uid,
+    //           password:this.ruleForm.password,
+    //         })
+    //       }
+    //   )*/
+    //   /*this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       this.logining = true;
+    //       login({
+    //         uid: this.ruleForm.uid,
+    //         //password: encryptMD5(this.ruleForm.password),
+    //         password: this.ruleForm.password,
+    //         captcha: this.ruleForm.captcha,
+    //         captchaId: this.ruleForm.captchaId,
+    //       }, this.loginCallback);
+    //     } else {
+    //       this.$message.error('用户名/密码/验证码不能为空');
+    //       this.logining = false;
+    //     }
+    //   })*/
+    // }
   }
 }
 </script>
