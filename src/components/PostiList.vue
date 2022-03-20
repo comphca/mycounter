@@ -60,27 +60,27 @@
 </template>
 
 <script>
-/*import {constants} from '../api/constants'
+import {constants} from '../api/constants'
 import {codeFormat, moneyFormat} from '../api/formatter'
-import {queryPosi,queryBalance} from '../api/orderApi'*/
+import {queryPosi,queryBalance} from '../api/orderApi'
 export default {
   name: "posti-list",
-/*  created() {
+  created() {
     this.tableData = this.posiData;
     this.balance = this.balanceData;
-  },*/
+  },
   //对vuwx中的数据进行监听需要使用computed的watched两个
-/*  computed: {*/
+  computed: {
     //把  this.$store.state.posiData  映射到   posiData()  中
     //vuex中变量发生变化的时候，posiData()和下面一个计算属性就会发生变化，计算属性变化watch中的函数就会执行
-/*    posiData(){
+    posiData(){
       return this.$store.state.posiData;
     },
     balanceData(){
       return this.$store.state.balance;
     },
-  },*/
-/*  watch: {
+  },
+  watch: {
     posiData: function (val){
       this.tableData = val;
       this.dataTotalCount = val.length;
@@ -88,7 +88,7 @@ export default {
     balanceData: function (val){
       this.balance = val;
     },
-  },*/
+  },
   //对vuwx中的数据进行监听需要使用computed的watched两个
   data(){
     return {
@@ -110,7 +110,7 @@ export default {
     }
   },
   methods:{
-/*    queryRefresh(){
+    queryRefresh(){
       queryPosi();
       queryBalance();
     },
@@ -123,7 +123,7 @@ export default {
     },
     codeFormatter(row, column) {
       return codeFormat(row.code);
-    },*/
+    },
 
     //cellStyle函数有四个参数，单元格所在的行、单元格所在的列、行下标、列下标
     cellStyle({row,column,rowIndex,columnIndex}){

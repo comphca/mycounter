@@ -24,7 +24,13 @@
                 </h3>
             </el-form-item>
 
+            <el-form-item label="客户编号">
+              <el-input v-model="custno" @blur="enterPwd" type="text"></el-input>
+            </el-form-item>
 
+            <el-form-item label="可用资金">
+              <el-input readonly v-model="canUsebalance"></el-input>
+            </el-form-item>
 
             <el-form-item label="证券代码">
                 <code-input></code-input>
@@ -97,9 +103,10 @@
 <script>
 
     import CodeInput from './CodeInput';
-/*    import {sendOrder} from "../api/orderApi";
-    import {constants} from "../api/constants";*/
-    /*import * as moment from 'moment';*/
+    import {sendOrder} from "../api/orderApi";
+    import {constants} from "../api/constants";
+    import * as moment from 'moment';
+    import {registInCustInfo,tradeLogin} from "../api/acccountApi";
 
     export default {
         name: "order-widget",
@@ -112,6 +119,9 @@
                 affordCount: undefined,
                 price: undefined,
                 volume: undefined,
+
+                canUsebalance: '',
+                custno : '',
             }
         },
         props: {
@@ -156,10 +166,17 @@
                 } else {
                   this.$message.error("委托发送失败"+msg);
                 }
+
             },
             //click时间直接调用api接口发送到后台，参数就是后台需要的参数
-            /*onOrder(){
-              sendOrder({uid:sessionStorage.getItem("uid"),
+            onOrder(){
+              typeof(ndesc)=="undefined" || ndesc=='' || ndesc==null
+              if (typeof (sessionStorage.getItem("custno")) == "undefined" || sessionStorage.getItem("custno") == '' || sessionStorage.getItem("custno") == null){
+                //如果前台缓存中取不到客户编号，认为当前未使用密码，客户编号校验，不能进行交易
+                alert("请输入客户编号和密码校验");
+                return;
+              }
+              sendOrder({uid:sessionStorage.getItem("custno"),
               type: constants.NEW_ORDER,
               timestamp: moment.now(),
               code: this.code,
@@ -167,10 +184,29 @@
               price: this.price * constants.MULTI_FACTOR,
               volume: this.volume,
               ordertype: constants.LIMIT
-              },
-                  //下面时调完后台的回调函数
+              }, //下面时调完后台的回调函数
               this.handleOrderRes)
-            }*/
+            },
+            enterPwd(){
+              this.$prompt('请输入交易密码', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                inputType: 'password',
+              }).then(({ value }) => {
+                tradeLogin({
+                  custno : this.custno,
+                  pwd : value,
+                },this.dealTradeLogin)
+              });
+            },
+            dealTradeLogin(status, message, data){
+              if (status == 0){
+                console.log('--------------')
+                console.log(data)
+                sessionStorage.setItem("custno",this.custno);
+                this.canUsebalance=data.data.balance;
+              }
+            }
         }
     }
 </script>

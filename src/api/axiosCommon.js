@@ -34,7 +34,7 @@ export const reqRealEndAsync = (method, baseUrl,
 
             //验证失败
             router.replace({
-                path: "/",
+                //path: "/",
                 query: {
                     msg: result.message
                 }

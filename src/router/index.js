@@ -50,6 +50,11 @@ const routes = [
         path: '/pwdsetting',
         name: 'PwdSetting',
         component: () => import(/* webpackChunkName: "about" */ '../views/PwdSetting.vue')
+      },
+      {
+        path: '/allot',
+        name: 'allot',
+        component: () => import(/* webpackChunkName: "about" */ '../views/Allot.vue')
       }
     ]
   },

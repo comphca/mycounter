@@ -19,3 +19,11 @@ export const regist = (params, callback) => {
 export const registInCustInfo = (params) => {
     return reqRealEnd("post",config.real_domain,'/doInsertCustinfo',params);
 };
+
+
+
+//交易时登录api
+export const tradeLogin = (params, callback) => {
+    return reqRealEndAsync("post", config.real_domain,
+        "/checkAcco", params, callback);
+};

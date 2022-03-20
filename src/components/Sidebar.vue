@@ -58,6 +58,11 @@ export default {
           title: '开户'
         },
         {
+          icon: 'el-icon-s-order',
+          index: 'allot',
+          title: '申购'
+        },
+        {
           icon: 'el-icon-pie-chart',
           index: 'dashboard',
           title: '资金股份'
