@@ -10,6 +10,12 @@ export const getIDType = (params,callback) => {
 
 // 客户注册
 export const regist = (params, callback) => {
-    return reqRealEnd("post", config.real_domain,
+    return reqRealEndAsync("post", config.real_domain,
         "/doOpenFundAcco", params, callback);
+};
+
+
+//输入密码调后台插入客户信息表数据
+export const registInCustInfo = (params) => {
+    return reqRealEnd("post",config.real_domain,'/doInsertCustinfo',params);
 };

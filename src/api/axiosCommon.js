@@ -12,6 +12,7 @@ export const reqRealEndAsync = (method, baseUrl,
                                 url, params, callback) => {
 
     params.token = sessionStorage.getItem('token');/*每次都从sessionStorage中获取token，发送请求的时候都会带上*/
+
     return axios({
         timeout: 5000,
         baseURL: baseUrl,
@@ -30,6 +31,7 @@ export const reqRealEndAsync = (method, baseUrl,
 
         //{code : 0 -- 成功的 1/2/其他 -- 失败,message: , data:{{}}}
         if (result.status == 1) {
+
             //验证失败
             router.replace({
                 path: "/",
@@ -37,6 +39,7 @@ export const reqRealEndAsync = (method, baseUrl,
                     msg: result.message
                 }
             });
+
         } else if (result.status == 0) {
             console.log("gljgljglj");
             //console.log(result.data);

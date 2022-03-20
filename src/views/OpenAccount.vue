@@ -23,7 +23,7 @@
             <el-row>
               <el-col span="8">
                 <el-form-item label="客户名称">
-                  <el-input ></el-input>
+                  <el-input v-model="custname" type="text"></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="8">
@@ -40,7 +40,7 @@
               </el-col>
               <el-col span="8">
                 <el-form-item label="证件号码">
-                  <el-input ></el-input>
+                  <el-input v-model="identityno"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -50,7 +50,8 @@
               <el-col span="8">
                 <el-form-item label="证件有效期">
                   <el-date-picker
-                      v-model="value1"
+                      v-model="vaildate"
+                      value-format="yyyyMMdd"
                       type="date"
                       placeholder="选择日期"
                       style="width: 100%">
@@ -83,17 +84,17 @@
             <el-row>
               <el-col span="8">
                 <el-form-item label="银行户名">
-                  <el-input ></el-input>
+                  <el-input v-model="namainbank"></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="8">
                 <el-form-item label="银行名称">
-                  <el-select v-model="value" placeholder="请选择" style="width: 100%"></el-select>
+                  <el-input v-model="bankname"></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="8">
                 <el-form-item label="银行账号">
-                  <el-input ></el-input>
+                  <el-input v-model="bankacco"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -121,17 +122,17 @@
             <el-row>
               <el-col span="8">
                 <el-form-item label="联系电话">
-                  <el-input ></el-input>
+                  <el-input v-model="mobilphone"></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="8">
                 <el-form-item label="通讯地址">
-                  <el-select v-model="value" placeholder="请选择" style="width: 100%"></el-select>
+                  <el-input v-model="address"></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="8">
                 <el-form-item label="电子邮件">
-                  <el-input ></el-input>
+                  <el-input v-model="email"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -160,8 +161,10 @@
 </template>
 
 <script>
-import {getIDType, regist} from "../api/acccountApi";
+import {getIDType, regist,registInCustInfo} from "../api/acccountApi";
 import {login} from "../api/loginApi";
+import axios from "axios";
+import qs from 'qs';
 
 export default {
   name: "OpenAccount",
@@ -173,6 +176,21 @@ export default {
 
       //提交数据
       IDType : '',
+      custname : '',
+      vaildate:'',
+      identityno:'',
+
+      //银行信息
+      namainbank :'',//银行户名
+      bankname:'',//银行名称
+      bankacco:'',//银行账号
+
+
+      //联系信息
+      mobilphone :'',//联系电话
+      address:'',//地址
+      email:''//邮箱
+
     }
   },
 
@@ -229,9 +247,51 @@ export default {
 
       //调api接口
       regist({
-        IDType : this.IDType
-      })
+        //基本信息
+        IDType : this.IDType,
+        custName : this.custname,
+        identityno : this.identityno,
+        vaildate : this.vaildate,
+
+        //银行信息
+        namainbank : this.namainbank,//银行户名
+        bankname : this.bankname,//银行名称
+        bankacco : this.bankacco,//银行账号
+
+
+        //联系信息
+        mobilphone : this.mobilphone,//联系电话
+        address : this.address,//地址
+        email : this.email//邮箱
+      },this.registcallback)
     },
+
+
+    registcallback(status,message,data){
+      //返回的客户编号
+      console.log(data.data);
+      if (status == 0){
+        this.$prompt('您的客户编号为:['+data.data+']请输入密码', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(({ value }) => {
+          registInCustInfo({
+            custNo : data.data,
+            pwd : value,
+          })
+            // axios(
+            //     {
+            //       timeout: 5000,
+            //       method: "post",
+            //       url: "http://localhost:8080/test",
+            //       data: qs.stringify({
+            //         pwd : value,
+            //       })
+            //     }
+            // )
+        });
+      }
+    }
 
   },
 
