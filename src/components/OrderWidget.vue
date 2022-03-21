@@ -20,7 +20,7 @@
                 <!--委托组件分为：1.买入；2.卖出
                 组件自己不知道自己是买入还是卖出，这里需要引用当前组件的父组件传递-->
                 <h3 :style="direction === 0 ? 'color:#F56C6C' : 'color:#67C23A' ">
-                    {{direction === 0?'买入':'卖出'}}股票
+                    {{direction === 0?'申购':'赎回'}}基金
                 </h3>
             </el-form-item>
 
@@ -29,7 +29,11 @@
             </el-form-item>
 
             <el-form-item label="可用资金">
-              <el-input readonly v-model="canUsebalance"></el-input>
+              <el-input readonly v-model="canUsebalance" :disabled="true"></el-input>
+            </el-form-item>
+
+            <el-form-item label="客户名称">
+              <el-input readonly v-model="custname" :disabled="true"></el-input>
             </el-form-item>
 
             <el-form-item label="证券代码">
@@ -48,7 +52,7 @@
             </el-form-item>
 
 
-            <el-form-item label="价格">
+<!--          <el-form-item :label=" (direction === 0 ? '申购' : '赎回') ">
                 <el-input-number v-model="price" controls-position="right"
                                  @change="handlePrice"
                                  :step="0.01"
@@ -58,11 +62,11 @@
 
                 </el-input-number>
 
-            </el-form-item>
+            </el-form-item>-->
 
 
 
-            <el-form-item :label=" (direction === 0 ? '买入' : '卖出') + '(股)' ">
+            <el-form-item :label=" (direction === 0 ? '申购' : '赎回') ">
 
 
                 <el-input-number v-model="volume" controls-position="right"
@@ -122,6 +126,7 @@
 
                 canUsebalance: '',
                 custno : '',
+                custname:'',
             }
         },
         props: {
@@ -205,6 +210,7 @@
                 console.log(data)
                 sessionStorage.setItem("custno",this.custno);
                 this.canUsebalance=data.data.balance;
+                this.custname=data.data.scustName;
               }
             }
         }

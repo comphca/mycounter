@@ -21,7 +21,7 @@
 </template>
 
 <script>
-/*import {queryCodeName} from '../api/orderApi'*/
+import {queryCodeName} from '../api/orderApi'
 export default {
   name: "code-input",
   data(){

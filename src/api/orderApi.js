@@ -29,7 +29,7 @@ export const queryPosi = () => {
 //查股票代码
 export const queryCodeName = (params) => {
     return reqRealEnd("post",
-        config.real_domain, '/api/code', params);
+        config.real_domain, '/code', params);
 };
 
 //查委托
