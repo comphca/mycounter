@@ -62,3 +62,21 @@ export const sendOrder = (params,callback) =>{
 export const cancelOrder = (params,callback) => {
     return reqRealEndAsync("post", config.real_domain, '/api/cancelorder', params, callback);
 };
+
+
+//查询当日委托数据
+export const queryCurrentTradeDate = (params,callback) => {
+    return reqRealEndAsync("post", config.real_domain, '/api/cancelorder', params, callback);
+};
+
+//登录的时候查询当日委托数据到vuex中
+export const queryCurrentTrade = () => {
+    reqRealEndAsync("post", config.real_domain,
+        '/queryCurrentDateTrade',
+        {},
+        (code, msg, data) => {
+        console.log("------查询当日委托数据")
+            console.log(data)
+            store.commit("updateTrade", data.data)
+        })
+};

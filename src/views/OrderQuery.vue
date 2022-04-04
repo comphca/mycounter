@@ -14,7 +14,7 @@
     </div>
 
     <el-card shadow="hover" class="container">
-      <order-list></order-list>
+      <order-list :isCurrentDate="true"></order-list>
     </el-card>
   </div>
 </template>

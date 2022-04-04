@@ -44,6 +44,7 @@
 
 <script>
 import {queryCaptcha, login} from '../api/loginApi';
+import {queryCurrentTrade} from '../api/orderApi'
 import axios from 'axios';
 // import qs from 'qs';
 
@@ -123,6 +124,12 @@ export default {
         setTimeout(() => {
           this.logining = false;
           this.$router.push({path : '/dashboard'});
+          //跳转主页面的时候先查询管理员能查看的委托数据，存放到vuex中，缓解服务器压力
+          setTimeout(() => {
+            //成交 委托 持仓查询
+            queryCurrentTrade();
+
+          }, 1000);
           //成交 委托 持仓查询
           //queryBalance();
           // queryOrder();

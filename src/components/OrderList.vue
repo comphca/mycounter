@@ -13,14 +13,14 @@
         :cell-style="cellStyle">   <!--cell-style属性可以定制单元格的属性，要一个函数写在最下面，这里先控制了padding属性，让单元格紧凑一点-->
 
       <!--label:标头的提示信息，这一列显示的是什么数据  align：对齐方式  prop：显示当前对象的哪个字段-->
-      <el-table-column prop="time" label="委托时间" align="center"
+      <el-table-column prop="stradeDate" label="委托时间" align="center"
                        sortable :sort-orders="['ascending','descending']"/>   <!--实现可排序-->
-      <el-table-column prop="code" label="股票代码" align="center"/>
-      <el-table-column prop="name" label="名称" align="center"/>
-      <el-table-column prop="price" label="委托价格" align="center"/>
-      <el-table-column prop="ocount" label="委托数量" align="center"/>
-      <el-table-column prop="direction" label="方向" align="center"/>
-      <el-table-column prop="status" label="状态" align="center"/>
+      <el-table-column prop="sfundCode" label="股票代码" align="center"/>
+      <el-table-column prop="sfundName" label="名称" align="center"/>
+      <el-table-column prop="enBalance" label="申购金额" align="center"/>
+      <!--<el-table-column prop="ocount" label="委托数量" align="center"/>-->
+      <el-table-column prop="sdirection" label="方向" align="center"/>
+      <el-table-column prop="sstatus" label="状态" align="center"/>
     </el-table>
 
 
@@ -31,7 +31,7 @@
                  size="mini"
                  style="margin-top: 2px;float: right"
                  icon="el-icon-refresh"
-                 @click="">
+                 @click="queryRefresh">
         刷新
       </el-button>
 
@@ -53,46 +53,75 @@
 </template>
 
 <script>
+
+import {queryCurrentTradeDate,queryCurrentTrade} from "../api/orderApi";
 export default {
   name: "order-list",
   data(){
     return {
       //声明的这个变量就是绑定到持仓列表的数据源上的
       tableData: [
-        {
-          time: '09:55:00',
-          code: '000001',
-          name: '平安银行',
-          price: 100,
-          ocount: 10,
-          direction: '买入',
-          status: 3
-        },
-        {
-          time: '09:50:00',
-          code: '000001',
-          name: '平安银行',
-          price: 100,
-          ocount: 10,
-          direction: '买入',
-          status: 1
-        },
-        {
-          time: '09:40:00',
-          code: '000001',
-          name: '平安银行',
-          price: 100,
-          ocount: 10,
-          direction: '买入',
-          status: 3
-        }
+        // {
+        //   time: '09:55:00',
+        //   code: '000001',
+        //   name: '平安银行',
+        //   price: 100,
+        //   ocount: 10,
+        //   direction: '买入',
+        //   status: 3
+        // },
+        // {
+        //   time: '09:50:00',
+        //   code: '000001',
+        //   name: '平安银行',
+        //   price: 100,
+        //   ocount: 10,
+        //   direction: '买入',
+        //   status: 1
+        // },
+        // {
+        //   time: '09:40:00',
+        //   code: '000001',
+        //   name: '平安银行',
+        //   price: 100,
+        //   ocount: 10,
+        //   direction: '买入',
+        //   status: 3
+        // }
       ],
 
-      dataTotalCount: 3,  //总记录数
+      dataTotalCount: 0,  //总记录数
       query: {
         currentPage: 1,  //当前页码
         pageSize: 2      //每页的记录数
       }
+    }
+  },
+  computed: {
+    tradeData() {
+      return this.$store.state.tradeData;
+    },
+    dataTotalCount() {
+      return this.$store.state.tradeData.length;
+    }
+  },
+  watch: {
+    tradeData: function (val) {
+      console.log('-----------------watch---------------');
+      console.log(val);
+      console.log(val.length);
+      this.tableData = val;
+      this.dataTotalCount = val.length;
+    }
+  },
+  props:{
+    isCurrentDate:Boolean,
+  },
+  //页面加载的时候通过调用后台查询接口返回数据渲染界面
+  created() {
+    //判断是否是当日委托界面过来的，是的话调一个查询接口，不是就是查另外一个接口
+    if (this.isCurrentDate){
+       this.tableData = this.tradeData;
     }
   },
   methods:{
@@ -134,6 +163,18 @@ export default {
         }
       }
 
+    },
+    queryCurrentDateTrade(){
+      queryCurrentTrade(this.queryCurrentTradeDateCallBack)
+    },
+    queryCurrentTradeDateCallBack(status,message,data){
+      if(status == 0){
+        //查询正常返回值赋值到控件上
+
+      }
+    },
+    queryRefresh(){
+      queryCurrentTrade();
     }
   }
 }

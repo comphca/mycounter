@@ -105,42 +105,42 @@ export default {
   data(){
     return {
       tableData: [
-        {
-          date: '20200105',
-          time: '14:00:01',
-          code: 600000,
-          name: '浦发银行',
-          price: 10,
-          ocount: 100,
-          status: 1
-        },
-        {
-          date: '20200101',
-          time: '14:00:02',
-          code: 600000,
-          name: '浦发银行',
-          price: 11,
-          ocount: 100,
-          status: 1
-        },
-        {
-          date: '20200103',
-          time: '14:00:03',
-          code: 600000,
-          name: '浦发银行',
-          price: 12,
-          ocount: 100,
-          status: 1
-        },
-        {
-          date: '20200111',
-          time: '14:00:04',
-          code: 600000,
-          name: '浦发银行',
-          price: 13,
-          ocount: 100,
-          status: 1
-        },
+        // {
+        //   date: '20200105',
+        //   time: '14:00:01',
+        //   code: 600000,
+        //   name: '浦发银行',
+        //   price: 10,
+        //   ocount: 100,
+        //   status: 1
+        // },
+        // {
+        //   date: '20200101',
+        //   time: '14:00:02',
+        //   code: 600000,
+        //   name: '浦发银行',
+        //   price: 11,
+        //   ocount: 100,
+        //   status: 1
+        // },
+        // {
+        //   date: '20200103',
+        //   time: '14:00:03',
+        //   code: 600000,
+        //   name: '浦发银行',
+        //   price: 12,
+        //   ocount: 100,
+        //   status: 1
+        // },
+        // {
+        //   date: '20200111',
+        //   time: '14:00:04',
+        //   code: 600000,
+        //   name: '浦发银行',
+        //   price: 13,
+        //   ocount: 100,
+        //   status: 1
+        // },
       ],
       query: {
         currentPage: 1,  //当前页码
@@ -149,7 +149,7 @@ export default {
         startDate: '',
         endDate: '',
       },
-      pageTotal: 4,
+      pageTotal: 0,
     }
   },
 
