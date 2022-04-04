@@ -55,7 +55,7 @@ export const queryTrade = () => {
 //发送委托
 export const sendOrder = (params,callback) =>{
     return reqRealEndAsync("post",config.real_domain,
-        '/api/sendorder',params,callback);
+        '/doAllot',params,callback);
 }
 
 // 委托

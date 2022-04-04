@@ -168,6 +168,14 @@
             handleOrderRes(code,msg,data){
                 if (code === 0){
                   this.$message.success("委托送往交易所");
+                  // //发送成功后需要把界面上的值都清空
+                  sessionStorage.removeItem("custno");
+                  this.custno='';
+                  this.code = '';
+                  this.name='';
+                  this.balance='';
+
+
                 } else {
                   this.$message.error("委托发送失败"+msg);
                 }
@@ -181,14 +189,14 @@
                 alert("请输入客户编号和密码校验");
                 return;
               }
-              sendOrder({uid:sessionStorage.getItem("custno"),
-              type: constants.NEW_ORDER,
-              timestamp: moment.now(),
-              code: this.code,
+              sendOrder({custno:sessionStorage.getItem("custno"),
+              //type: constants.NEW_ORDER,
+              //timestamp: moment.now(),
+               fundcode: this.code,
               direction: this.direction,
-              price: this.price * constants.MULTI_FACTOR,
-              volume: this.volume,
-              ordertype: constants.LIMIT
+              //requestBalance: this.price * constants.MULTI_FACTOR,
+              requestBalance: this.volume,
+              //ordertype: constants.LIMIT
               }, //下面时调完后台的回调函数
               this.handleOrderRes)
             },
