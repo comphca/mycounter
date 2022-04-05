@@ -6,7 +6,7 @@
       <el-row>
         <!--自动提示框：通用组件应该抽象出来-->
         <el-col :span="4">
-          <code-input></code-input>
+          <code-input ref="fundcode"></code-input>
         </el-col>
 
 
@@ -60,14 +60,15 @@
         :cell-style="cellStyle">
 
       <!--label:标头的提示信息，这一列显示的是什么数据  align：对齐方式  prop：显示当前对象的哪个字段-->
-      <el-table-column prop="date" label="委托日期" align="center"
+      <el-table-column prop="stradeDate" label="委托日期" align="center"
                        sortable :sort-orders="['ascending','descending']"/>   <!--实现可排序-->
-      <el-table-column prop="time" label="委托时间" align="center"/>   <!--实现可排序-->
-      <el-table-column prop="code" label="股票代码" align="center"/>
-      <el-table-column prop="name" label="名称" align="center"/>
-      <el-table-column prop="price" label="委托价格" align="center"/>
-      <el-table-column prop="ocount" label="委托数量" align="center"/>
-      <el-table-column prop="status" label="状态" align="center"/>
+<!--      <el-table-column prop="stradeDate" label="委托时间" align="center"/>   &lt;!&ndash;实现可排序&ndash;&gt;-->
+      <el-table-column prop="sfundCode" label="基金代码" align="center"/>
+      <el-table-column prop="sfundName" label="名称" align="center"/>
+      <el-table-column prop="enBalance" label="委托金额" align="center"/>
+<!--      <el-table-column prop="ocount" label="委托数量" align="center"/>-->
+      <el-table-column prop="sdirection" label="方向" align="center"/>
+      <el-table-column prop="sstatus" label="状态" align="center"/>
 
     </el-table>
 
@@ -95,7 +96,7 @@
 <script>
 
 import CodeInput from './CodeInput'
-
+import {queryHisTrade} from  '../api/orderApi'
 export default {
   name: "his-order-list",
   components: {
@@ -144,12 +145,27 @@ export default {
       ],
       query: {
         currentPage: 1,  //当前页码
-        pageSize: 3,   //每页的数据条数
+        pageSize: 2,   //每页的数据条数
         code: '',
         startDate: '',
         endDate: '',
       },
       pageTotal: 0,
+    }
+  },
+
+  computed: {
+    hisTradeData() {
+      return this.$store.state.hisTradeData;
+    }
+  },
+  watch: {
+    hisTradeData: function (val) {
+      console.log('-----------------his watch---------------');
+      console.log(val);
+      console.log(val.length);
+      this.tableData = val;
+      this.pageTotal = val.length;
     }
   },
 
@@ -160,8 +176,24 @@ export default {
       this.query.code = item.code;
     },
 
-    handleSearch(){
 
+
+    handleSearch(){
+      //
+      console.log('----刷新1-----');
+      // console.log(this.$refs.fundcode.state);
+      console.log('----刷新2-----');
+      //子组件需要判断基金代码是否有值存在
+      if (this.$refs.fundcode.state == '' || this.$refs.fundcode.state == null || this.$refs.fundcode.state == undefined)
+      {
+        this.query.code = '';
+      }
+      //触发搜索事件
+      queryHisTrade({
+        fundcode : this.query.code,
+        startdate : this.query.startDate,
+        enddate: this.query.endDate,
+      });
     },
     cellStyle({row,column,rowIndex,columnIndex}){
       return "padding:2px";
@@ -204,13 +236,17 @@ export default {
   //因为自动提示会再总线上丢一个消息，历史委托需要这个消息，这边进行监听
   //codeinput-selected:消息id，后面的自定义的函数
   created(){
+    this.tableData = this.hisTradeData;
     this.$bus.on("codeinput-selected",this.updateSelectedCode);
+
+    //界面新建的时候调用刷新事件
+    this.autohandleSearch();
   },
   //有监听就要有取消监听
   beforeDestroy(){
     this.$bus.off("codeinput-selected",this.updateSelectedCode)
 
-  },
+  }
 
 }
 </script>

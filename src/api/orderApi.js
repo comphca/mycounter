@@ -80,3 +80,17 @@ export const queryCurrentTrade = () => {
             store.commit("updateTrade", data.data)
         })
 };
+
+//queryHisTrade查询历史委托数据，有参数基金代码或者基金名称和委托时间
+export const queryHisTrade = (params) => {
+    console.log("------查询历史委托数据111")
+    console.log(params);
+    reqRealEndAsync("post", config.real_domain,
+        '/queryHisTrade',
+        params,
+        (code, msg, data) => {
+            console.log("------查询历史委托数据")
+            console.log(data)
+            store.commit("updateHisTradeData", data.data)
+        })
+};

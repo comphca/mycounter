@@ -8,6 +8,7 @@ export default new Vuex.Store({
     posiData: [],
     orderData: [],
     tradeData:[],
+    hisTradeData:[],
     balance: 0,
   },
   mutations: {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     updateBalance(state,balance){
       state.balance = balance;
     },
+    updateHisTradeData(state,hisTradeInfo){
+      state.hisTradeData = hisTradeInfo;
+    }
   },
   //异步操作，类似mutations
   //actions: {},

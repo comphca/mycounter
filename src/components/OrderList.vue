@@ -15,7 +15,7 @@
       <!--label:标头的提示信息，这一列显示的是什么数据  align：对齐方式  prop：显示当前对象的哪个字段-->
       <el-table-column prop="stradeDate" label="委托时间" align="center"
                        sortable :sort-orders="['ascending','descending']"/>   <!--实现可排序-->
-      <el-table-column prop="sfundCode" label="股票代码" align="center"/>
+      <el-table-column prop="sfundCode" label="基金代码" align="center"/>
       <el-table-column prop="sfundName" label="名称" align="center"/>
       <el-table-column prop="enBalance" label="申购金额" align="center"/>
       <!--<el-table-column prop="ocount" label="委托数量" align="center"/>-->
