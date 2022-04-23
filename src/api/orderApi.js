@@ -94,3 +94,9 @@ export const queryHisTrade = (params) => {
             store.commit("updateHisTradeData", data.data)
         })
 };
+
+//根据基金代码获取最近5天的行情信息
+export const queryFundMarket = (params,callback) => {
+    return reqRealEndAsync("post",config.real_domain,
+        '/dofundmarket/',params,callback);
+}

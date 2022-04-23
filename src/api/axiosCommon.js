@@ -26,6 +26,7 @@ export const reqRealEndAsync = (method, baseUrl,
         //true -- List<String>
         traditional: true,
     }).then(res => {
+        console.log("--------------------------");
         console.log(res);
         let result = res.data;
 
